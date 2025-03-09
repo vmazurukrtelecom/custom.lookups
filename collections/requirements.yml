@@ -1,0 +1,4 @@
+---
+collections:
+  - name: https://github.com/vmazurukrtelecom/custom.lookups.git
+    type: git
