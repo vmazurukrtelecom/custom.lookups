@@ -1,7 +1,0 @@
----
-- hosts: all
-  
-  tasks:
-  - name: "What's my received value  test_variable1 via inventory VARIABLE after lookup"
-    debug:
-       msg: '{{ test_variable1 }}'
