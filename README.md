@@ -17,16 +17,20 @@
 
 але як пізніше виявлено -  значнення inventory_host можна і не передавати через параметри до custom_lookup_plugin;
 
-значнення inventory_host можна отримати із variables зі "стандатного виклику run"
+ inventory_host можна отримати із variables котрі передаються в "стандатному виклику run" LookupModule
 ```
 class LookupModule(LookupBase):
     def run(self, terms, variables=None, **kwargs):
 ...
+
+    inventory_hostname = variables.get('inventory_hostname')
+
 ```
 
 `variables (dict, optional): Dictionary of all variables in the playbook context.`
 
 
+---
 _created with support of grok3 (free tier))_
 
 
