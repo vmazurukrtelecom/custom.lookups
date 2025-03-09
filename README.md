@@ -6,21 +6,24 @@
 
 Виводить змінні контексту плейбука 
 
-### Використання
-```yaml
-- hosts: localhost
-  tasks:
-    - debug:
-        msg: "{{ lookup('custom.lookups.vars_dump', file_path='/path/to/custom_file.txt') }}"
-
-
-
 створено для тестування функціоналу inventory VARIABLES
 
 згідно статті https://www.redhat.com/en/blog/ansible-tower-feature-spotlight-custom-credentials
 
 
-приклад перевірки
+### Використання lookup (в playbook)
+```yaml
+- hosts: all
+  tasks:
+    - name: Dump inventory_hostname to msg
+      debug:
+        msg: "{{ lookup('custom.lookups.vars_dump') }}"
+```
+
+
+### Використання lookup (в inventory VARIABLES)
+
+приклад 
 
 ```
 ---
