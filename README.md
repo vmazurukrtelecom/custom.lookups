@@ -12,16 +12,23 @@ _created with support of grok3 (free tier))_
 
 Виводить змінні контексту плейбука 
 
+основна причина / ідея:
+possibility of ansible AWX obtain credendials  **per machine** - via 3rd party lookup plugin
 
-базово створено для тестування функціоналу передачі значнення inventory_host через inventory VARIABLES в custom_lookup_plugin 
+
+(i.e. ! NOT per template )
 
 
 згідно статті https://www.redhat.com/en/blog/ansible-tower-feature-spotlight-custom-credentials
 
+---
+базово створено для тестування функціоналу передачі значнення inventory_host через inventory VARIABLES в custom_lookup_plugin 
 
-( possibility of ansible AWX: **credendials per machine** - via 3rd party lookup plugin ) 
+(або по іншому - "динамічного" (per machine / host) використання ansible (!не AWX) lookup plugin функціоналу в "ніби статичних" inventory VARIABLES) 
+
 
 але як пізніше виявлено -  значнення inventory_host можна і не передавати через параметри до custom_lookup_plugin;
+
 
  inventory_host можна отримати із variables котрі передаються в "стандатному виклику run" LookupModule
 ```
