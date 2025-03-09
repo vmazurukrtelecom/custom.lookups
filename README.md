@@ -49,7 +49,7 @@ class LookupModule(LookupBase):
 
 окрема замітка:
 
-lookup_plugin найпрстіше встановлювати через collections;
+lookup_plugin найпростіше встановлювати через collections;
 
 відповідно додано collections/requirements.yml
 
