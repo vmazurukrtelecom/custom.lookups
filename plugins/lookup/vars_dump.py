@@ -2,8 +2,7 @@
 
 from ansible.errors import AnsibleError
 from ansible.plugins.lookup import LookupBase
-from ansible.vars.hostvars import HostVars
-from ansible.vars.hostvars import HostVarsVars  # Додаємо імпорт для HostVarsVars
+from ansible.vars.hostvars import HostVars, HostVarsVars
 import json
 from datetime import datetime
 
@@ -15,7 +14,7 @@ description:
   - This lookup plugin writes all variables available in the current playbook context to a specified file,
     including a timestamp of when the dump was created.
   - The output is formatted as JSON for easy readability and parsing.
-  - Handles non-JSON-serializable objects like HostVars and HostVarsVars by converting them to dictionaries.
+  - Handles non-JSON-serializable objects by converting them to dictionaries or strings.
 options:
   file_path:
     description: The path to the file where variables will be written.
@@ -43,35 +42,41 @@ _raw:
 '''
 
 class LookupModule(LookupBase):
-    def _convert_to_serializable(self, obj):
+    def _convert_to_serializable(self, obj, depth=0, max_depth=10):
         """
         Convert non-JSON-serializable objects to a serializable format.
 
         Args:
             obj: The object to convert.
+            depth: Current recursion depth to prevent infinite loops.
+            max_depth: Maximum recursion depth to avoid stack overflow.
 
         Returns:
             A JSON-serializable representation of the object.
         """
+        if depth > max_depth:
+            return f"Max recursion depth ({max_depth}) exceeded: {str(obj)}"
+
         if isinstance(obj, (HostVars, HostVarsVars)):
             # Перетворюємо HostVars або HostVarsVars у словник
-            return dict(obj)
+            try:
+                return {k: self._convert_to_serializable(v, depth + 1, max_depth) for k, v in obj.items()}
+            except AttributeError:
+                return str(obj)
         elif isinstance(obj, dict):
             # Рекурсивно обробляємо словники
-            return {k: self._convert_to_serializable(v) for k, v in obj.items()}
+            return {k: self._convert_to_serializable(v, depth + 1, max_depth) for k, v in obj.items()}
         elif isinstance(obj, list):
             # Рекурсивно обробляємо списки
-            return [self._convert_to_serializable(item) for item in obj]
+            return [self._convert_to_serializable(item, depth + 1, max_depth) for item in obj]
         elif isinstance(obj, (str, int, float, bool, type(None))):
             # Базові типи вже серіалізовані
             return obj
         else:
-            # Для інших типів повертаємо строкове представлення
+            # Універсальна обробка: спробуємо отримати словник або повернемо рядок
             try:
-                # Спробуємо серіалізувати через dict, якщо об’єкт це підтримує
-                return dict(obj)
-            except (TypeError, ValueError):
-                # Якщо не вдається, повертаємо str
+                return {k: self._convert_to_serializable(v, depth + 1, max_depth) for k, v in obj.items()}
+            except (TypeError, AttributeError, ValueError):
                 return str(obj)
 
     def run(self, terms, variables=None, **kwargs):
