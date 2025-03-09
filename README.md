@@ -11,6 +11,9 @@
 згідно статті https://www.redhat.com/en/blog/ansible-tower-feature-spotlight-custom-credentials
 
 
+created with support of grok3 (free tier))
+
+
 ### Використання lookup (в playbook)
 ```yaml
 - hosts: all
