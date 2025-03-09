@@ -2,6 +2,7 @@
 
 from ansible.errors import AnsibleError
 from ansible.plugins.lookup import LookupBase
+from ansible.vars.hostvars import HostVars
 import json
 from datetime import datetime
 
@@ -13,6 +14,7 @@ description:
   - This lookup plugin writes all variables available in the current playbook context to a specified file,
     including a timestamp of when the dump was created.
   - The output is formatted as JSON for easy readability and parsing.
+  - Handles non-JSON-serializable objects like HostVars by converting them to dictionaries.
 options:
   file_path:
     description: The path to the file where variables will be written.
@@ -40,6 +42,32 @@ _raw:
 '''
 
 class LookupModule(LookupBase):
+    def _convert_to_serializable(self, obj):
+        """
+        Convert non-JSON-serializable objects to a serializable format.
+
+        Args:
+            obj: The object to convert.
+
+        Returns:
+            A JSON-serializable representation of the object.
+        """
+        if isinstance(obj, HostVars):
+            # Перетворюємо HostVars у словник
+            return dict(obj)
+        elif isinstance(obj, dict):
+            # Рекурсивно обробляємо словники
+            return {k: self._convert_to_serializable(v) for k, v in obj.items()}
+        elif isinstance(obj, list):
+            # Рекурсивно обробляємо списки
+            return [self._convert_to_serializable(item) for item in obj]
+        elif isinstance(obj, (str, int, float, bool, type(None))):
+            # Базові типи вже серіалізовані
+            return obj
+        else:
+            # Для інших типів повертаємо строкове представлення
+            return str(obj)
+
     def run(self, terms, variables=None, **kwargs):
         """
         Write all playbook variables to a file with a timestamp.
@@ -65,10 +93,16 @@ class LookupModule(LookupBase):
         # Генеруємо таймстамп
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
+        # Перетворюємо variables у серіалізований формат
+        try:
+            serializable_variables = self._convert_to_serializable(variables)
+        except Exception as e:
+            raise AnsibleError(f"Failed to convert variables to a serializable format: {str(e)}")
+
         # Формуємо дані для запису
         output_data = {
             "timestamp": timestamp,
-            "variables": variables
+            "variables": serializable_variables
         }
 
         # Записуємо у файл
