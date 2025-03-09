@@ -1,7 +1,5 @@
-- hosts: localhost
-  vars:
-    my_var: "Hello"
+- hosts: all
   tasks:
-    - name: Dump variables to msg
+    - name: Dump inventory_hostname to msg
       debug:
         msg: "{{ lookup('custom.lookups.vars_dump') }}"
