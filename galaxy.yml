@@ -5,11 +5,11 @@ version: 1.0.0
 readme: README.md
 authors:
   - "Your Name <your.email@example.com>"
-description: "A collection containing lookup plugins, including vars_dump for dumping variables to a file"
+description: "A collection containing lookup plugins, including vars_dump for dumping variables"
 license: "GPL-3.0-or-later"
 repository: "https://github.com/vmazurukrtelecom/custom.lookups"
-documentation: "https://vmazurukrtelecom.github.io/custom.lookups"
-homepage: "https://vmazurukrtelecom.github.io/custom.lookups"
+documentation: "https://user.github.io/custom.lookups"
+homepage: "https://user.github.io/custom.lookups"
 issues: "https://github.com/vmazurukrtelecom/custom.lookups/issues"
 tags:
   - lookup
