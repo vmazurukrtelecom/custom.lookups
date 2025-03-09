@@ -6,12 +6,28 @@
 
 Виводить змінні контексту плейбука 
 
-створено для тестування функціоналу inventory VARIABLES
+
+базово створено для тестування функціоналу передачі значнення inventory_host через inventory VARIABLES в custom_lookup_plugin 
+
 
 згідно статті https://www.redhat.com/en/blog/ansible-tower-feature-spotlight-custom-credentials
 
 
-created with support of grok3 (free tier))
+( possibility of ansible AWX: **credendials per machine** - via 3rd party lookup plugin ) 
+
+але як пізніше виявлено -  значнення inventory_host можна і не передавати через параметри до custom_lookup_plugin;
+
+значнення inventory_host можна отримати із variables зі "стандатного виклику run"
+```
+class LookupModule(LookupBase):
+    def run(self, terms, variables=None, **kwargs):
+...
+```
+
+`variables (dict, optional): Dictionary of all variables in the playbook context.`
+
+
+_created with support of grok3 (free tier))_
 
 
 ### Використання lookup (в playbook)
