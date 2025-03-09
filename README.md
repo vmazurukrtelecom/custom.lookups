@@ -12,7 +12,10 @@ _created with support of grok3 (free tier))_
 
 Виводить змінні контексту плейбука 
 
-основна причина / ідея:
+===
+основна причина / ідея розробки/тестування даного плагіну:
+
+
 possibility of ansible AWX obtain credendials  **per machine** - via 3rd party lookup plugin
 
 
@@ -43,6 +46,12 @@ class LookupModule(LookupBase):
 `variables (dict, optional): Dictionary of all variables in the playbook context.`
 
 
+
+окрема замітка:
+
+lookup_plugin найпрстіше встановлювати через collections;
+
+відповідно додано collections/requirements.yml
 
 
 ### Використання lookup (в playbook)
