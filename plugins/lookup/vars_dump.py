@@ -3,6 +3,7 @@
 from ansible.errors import AnsibleError
 from ansible.plugins.lookup import LookupBase
 from ansible.vars.hostvars import HostVars
+from ansible.vars.hostvars import HostVarsVars  # Додаємо імпорт для HostVarsVars
 import json
 from datetime import datetime
 
@@ -14,7 +15,7 @@ description:
   - This lookup plugin writes all variables available in the current playbook context to a specified file,
     including a timestamp of when the dump was created.
   - The output is formatted as JSON for easy readability and parsing.
-  - Handles non-JSON-serializable objects like HostVars by converting them to dictionaries.
+  - Handles non-JSON-serializable objects like HostVars and HostVarsVars by converting them to dictionaries.
 options:
   file_path:
     description: The path to the file where variables will be written.
@@ -52,8 +53,8 @@ class LookupModule(LookupBase):
         Returns:
             A JSON-serializable representation of the object.
         """
-        if isinstance(obj, HostVars):
-            # Перетворюємо HostVars у словник
+        if isinstance(obj, (HostVars, HostVarsVars)):
+            # Перетворюємо HostVars або HostVarsVars у словник
             return dict(obj)
         elif isinstance(obj, dict):
             # Рекурсивно обробляємо словники
@@ -66,7 +67,12 @@ class LookupModule(LookupBase):
             return obj
         else:
             # Для інших типів повертаємо строкове представлення
-            return str(obj)
+            try:
+                # Спробуємо серіалізувати через dict, якщо об’єкт це підтримує
+                return dict(obj)
+            except (TypeError, ValueError):
+                # Якщо не вдається, повертаємо str
+                return str(obj)
 
     def run(self, terms, variables=None, **kwargs):
         """
