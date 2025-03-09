@@ -1,6 +1,12 @@
 # Custom Lookups Collection
 
-Ця колекція містить lookup-плагіни для Ansible. Наразі доступний плагін `vars_dump`.
+Ця колекція містить lookup-плагін для Ansible `vars_dump`.
+
+---
+_created with support of grok3 (free tier))_
+
+
+
 
 ## Плагін `vars_dump`
 
@@ -30,8 +36,6 @@ class LookupModule(LookupBase):
 `variables (dict, optional): Dictionary of all variables in the playbook context.`
 
 
----
-_created with support of grok3 (free tier))_
 
 
 ### Використання lookup (в playbook)
